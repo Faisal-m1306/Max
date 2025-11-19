@@ -1,5 +1,6 @@
-import random, webbrowser, os, time, wikipedia, getpass
+import random, webbrowser, os, time, getpass, subprocess, sys
 import pyautogui 
+import wikipedia
 
 responses1 = ["Hi", "Hello", "hi", "hello", "How can I help you?"]
 responses2 = ["bye", "Goodbye", "goodbye", "Bye"]
@@ -159,7 +160,15 @@ def mainTasK():
             music_dir = ""
             song = os.listdir(music_dir)
             print(song)
-            os.startfile(os.path.join(music_dir, song[0]))
+            path = os.path.join(music_dir, song[0])
+            # Use os.startfile on Windows if available, otherwise use platform-specific open command
+            startfile = getattr(os, "startfile", None)
+            if startfile:
+                startfile(path)
+            elif sys.platform == "darwin":
+                subprocess.run(["open", path])
+            else:
+                subprocess.run(["xdg-open", path])
 
         elif 'open instagram' in i:
             webbrowser.open_new_tab("https://www.instagram.com")
@@ -180,7 +189,13 @@ def mainTasK():
         elif 'play video' in i:
             """Change the file path"""
             video_path = ""
-            os.startfile(video_path)
+            path1= os.path.join(video_path)
+            if startfile:
+                startfile(path1)
+            elif sys.platform == "darwin":
+                subprocess.run(["open", path1])
+            else:
+                subprocess.run(["xdg-open", path1])
 
         elif 'wikipedia' in i:
             print('Searching on wikipedia...')
@@ -189,9 +204,6 @@ def mainTasK():
             print("Accoding to wikipedia")
             print(results)        
         
-        elif 'let me control the pc with my hands' in i:
-            print("Wait a second...")
-            hands.main()
 
         else:
             print(AI + ai + y + "Error, command not found :( ")
